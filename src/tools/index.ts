@@ -20,8 +20,8 @@ import {
   ast_grep_replace,
 } from "./ast-grep"
 
-import { grep } from "./grep"
-import { glob } from "./glob"
+import { createGrep, grep as grepLegacy } from "./grep"
+import { createGlob, glob as globLegacy } from "./glob"
 export { createSlashcommandTool, discoverCommandsSync } from "./slashcommand"
 
 import {
@@ -52,6 +52,13 @@ export { createCallOmoAgent } from "./call-omo-agent"
 export { createLookAt } from "./look-at"
 export { createSisyphusTask, type SisyphusTaskToolOptions, DEFAULT_CATEGORIES, CATEGORY_PROMPT_APPENDS } from "./sisyphus-task"
 
+export function createGlobGrepTools(ctx: PluginInput): Record<string, ToolDefinition> {
+  return {
+    glob: createGlob(ctx),
+    grep: createGrep(ctx),
+  }
+}
+
 export function createBackgroundTools(manager: BackgroundManager, client: OpencodeClient): Record<string, ToolDefinition> {
   return {
     background_output: createBackgroundOutput(manager, client),
@@ -73,10 +80,15 @@ export const builtinTools: Record<string, ToolDefinition> = {
   lsp_code_action_resolve,
   ast_grep_search,
   ast_grep_replace,
-  grep,
-  glob,
   session_list,
   session_read,
   session_search,
   session_info,
+  grep: grepLegacy,
+  glob: globLegacy,
+}
+
+export const globGrepToolsLegacy: Record<string, ToolDefinition> = {
+  grep: grepLegacy,
+  glob: globLegacy,
 }

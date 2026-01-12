@@ -52,8 +52,10 @@ import {
 } from "./features/claude-code-session-state";
 import {
   builtinTools,
+  globGrepToolsLegacy,
   createCallOmoAgent,
   createBackgroundTools,
+  createGlobGrepTools,
   createLookAt,
   createSkillTool,
   createSkillMcpTool,
@@ -230,6 +232,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
     ? createBackgroundNotificationHook(backgroundManager)
     : null;
   const backgroundTools = createBackgroundTools(backgroundManager, ctx.client);
+  const globGrepTools = createGlobGrepTools(ctx);
 
   const callOmoAgent = createCallOmoAgent(ctx, backgroundManager);
   const lookAt = createLookAt(ctx);
@@ -303,6 +306,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
 
     tool: {
       ...builtinTools,
+      ...globGrepTools,
       ...backgroundTools,
       call_omo_agent: callOmoAgent,
       look_at: lookAt,
