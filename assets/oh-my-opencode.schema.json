@@ -72,7 +72,6 @@
           "empty-message-sanitizer",
           "thinking-block-validator",
           "ralph-loop",
-          "preemptive-compaction",
           "compaction-context-injector",
           "claude-code-hooks",
           "auto-slash-command",
@@ -2134,14 +2133,6 @@
         "auto_resume": {
           "type": "boolean"
         },
-        "preemptive_compaction": {
-          "type": "boolean"
-        },
-        "preemptive_compaction_threshold": {
-          "type": "number",
-          "minimum": 0.5,
-          "maximum": 0.95
-        },
         "truncate_all_tool_outputs": {
           "type": "boolean"
         },
@@ -2234,9 +2225,6 @@
               }
             }
           }
-        },
-        "dcp_for_compaction": {
-          "type": "boolean"
         }
       }
     },
