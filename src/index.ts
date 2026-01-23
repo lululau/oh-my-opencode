@@ -79,6 +79,7 @@ import { createModelCacheState, getModelLimit } from "./plugin-state";
 import { createConfigHandler } from "./plugin-handlers";
 
 const OhMyOpenCodePlugin: Plugin = async (ctx) => {
+  setDefaultDirectory(ctx.directory);
   // Start background tmux check immediately
   startTmuxCheck();
 
