@@ -23,6 +23,11 @@ import { createBuiltinMcps } from "../mcp";
 import type { OhMyOpenCodeConfig } from "../config";
 import { log } from "../shared";
 import { migrateAgentConfig } from "../shared/permission-compat";
+import {
+  resolveModelPreset,
+  mergeAgentOverridesWithPreset,
+  mergeCategoriesWithPreset,
+} from "../shared/model-preset-resolver";
 import { PROMETHEUS_SYSTEM_PROMPT, PROMETHEUS_PERMISSION } from "../agents/prometheus-prompt";
 import { DEFAULT_CATEGORIES } from "../tools/delegate-task/constants";
 import type { ModelCacheState } from "../plugin-state";
@@ -99,12 +104,32 @@ export function createConfigHandler(deps: ConfigHandlerDeps) {
       log(`Plugin load errors`, { errors: pluginComponents.errors });
     }
 
+    const selectedModel = config.model as string | undefined;
+    const presetResult = resolveModelPreset(selectedModel, pluginConfig.model_presets);
+
+    if (presetResult) {
+      log("Model preset applied", {
+        selectedModel,
+        matchedPattern: presetResult.matchedPattern,
+      });
+    }
+
+    const effectiveAgentOverrides = mergeAgentOverridesWithPreset(
+      pluginConfig.agents,
+      presetResult?.preset.agents
+    );
+
+    const effectiveCategories = mergeCategoriesWithPreset(
+      pluginConfig.categories,
+      presetResult?.preset.categories
+    );
+
     const builtinAgents = createBuiltinAgents(
       pluginConfig.disabled_agents,
-      pluginConfig.agents,
+      effectiveAgentOverrides,
       ctx.directory,
       config.model as string | undefined,
-      pluginConfig.categories,
+      effectiveCategories,
       pluginConfig.git_master
     );
 

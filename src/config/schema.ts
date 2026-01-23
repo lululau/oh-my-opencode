@@ -181,6 +181,19 @@ export const BuiltinCategoryNameSchema = z.enum([
 
 export const CategoriesConfigSchema = z.record(z.string(), CategoryConfigSchema)
 
+// Model Presets - dynamic agent config based on selected model
+export const ModelPresetConfigSchema = z.object({
+  /** Agent overrides for this preset */
+  agents: AgentOverridesSchema.optional(),
+  /** Category overrides for this preset */
+  categories: CategoriesConfigSchema.optional(),
+})
+
+export const ModelPresetsConfigSchema = z.record(
+  z.string(), // Model pattern (exact: "google/antigravity-*" or wildcard: "zhipuai-coding-plan/*")
+  ModelPresetConfigSchema
+)
+
 export const CommentCheckerConfigSchema = z.object({
   /** Custom prompt to replace the default warning message. Use {{comments}} placeholder for detected comments XML. */
   custom_prompt: z.string().optional(),
@@ -307,6 +320,7 @@ export const OhMyOpenCodeConfigSchema = z.object({
   disabled_commands: z.array(BuiltinCommandNameSchema).optional(),
   agents: AgentOverridesSchema.optional(),
   categories: CategoriesConfigSchema.optional(),
+  model_presets: ModelPresetsConfigSchema.optional(),
   claude_code: ClaudeCodeConfigSchema.optional(),
   sisyphus_agent: SisyphusAgentConfigSchema.optional(),
   comment_checker: CommentCheckerConfigSchema.optional(),
@@ -339,5 +353,7 @@ export type CategoryConfig = z.infer<typeof CategoryConfigSchema>
 export type CategoriesConfig = z.infer<typeof CategoriesConfigSchema>
 export type BuiltinCategoryName = z.infer<typeof BuiltinCategoryNameSchema>
 export type GitMasterConfig = z.infer<typeof GitMasterConfigSchema>
+export type ModelPresetConfig = z.infer<typeof ModelPresetConfigSchema>
+export type ModelPresetsConfig = z.infer<typeof ModelPresetsConfigSchema>
 
 export { AnyMcpNameSchema, type AnyMcpName, McpNameSchema, type McpName } from "../mcp/types"
