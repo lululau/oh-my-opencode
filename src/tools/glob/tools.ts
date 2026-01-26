@@ -2,7 +2,7 @@ import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import { runRgFiles } from "./cli"
 import { resolveGrepCliWithAutoInstall } from "./constants"
 import { formatGlobResult } from "./utils"
-import { resolveDefaultDirectoryPath } from "../../shared/default-directory"
+import { resolveSessionDirectoryPath } from "../../shared/default-directory"
 
 export const glob: ToolDefinition = tool({
   description:
@@ -16,15 +16,15 @@ export const glob: ToolDefinition = tool({
       .string()
       .optional()
       .describe(
-        "The directory to search in. If not specified, the current working directory will be used. " +
-          "IMPORTANT: Omit this field to use the default directory. DO NOT enter \"undefined\" or \"null\" - " +
+        "The directory to search in. If not specified, current working directory will be used. " +
+          "IMPORTANT: Omit this field to use default directory. DO NOT enter \"undefined\" or \"null\" - " +
           "simply omit it for the default behavior. Must be a valid directory path if provided."
       ),
   },
-  execute: async (args) => {
+  execute: async (args, context) => {
     try {
       const cli = await resolveGrepCliWithAutoInstall()
-      const resolvedPath = resolveDefaultDirectoryPath(args.path)
+      const resolvedPath = resolveSessionDirectoryPath(context.sessionID, args.path)
       const paths = [resolvedPath]
 
       const result = await runRgFiles(

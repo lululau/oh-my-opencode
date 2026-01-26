@@ -33,3 +33,4 @@ export { createStartWorkHook } from "./start-work";
 export { createAtlasHook } from "./atlas";
 export { createDelegateTaskRetryHook } from "./delegate-task-retry";
 export { createQuestionLabelTruncatorHook } from "./question-label-truncator";
+export { createSessionDirectoryMapperHook } from "./session-directory-mapper";

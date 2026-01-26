@@ -12,6 +12,7 @@ import {
   createThinkModeHook,
   createClaudeCodeHooksHook,
   createAnthropicContextWindowLimitRecoveryHook,
+  createSessionDirectoryMapperHook,
 
   createCompactionContextInjector,
   createRulesInjectorHook,
@@ -141,6 +142,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   const directoryReadmeInjector = isHookEnabled("directory-readme-injector")
     ? createDirectoryReadmeInjectorHook(ctx)
     : null;
+  const sessionDirectoryMapper = createSessionDirectoryMapperHook(ctx);
   const emptyTaskResponseDetector = isHookEnabled("empty-task-response-detector")
     ? createEmptyTaskResponseDetectorHook(ctx)
     : null;
@@ -375,7 +377,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
       interactive_bash,
     },
 
-    "chat.message": async (input, output) => {
+     "chat.message": async (input, output) => {
       if (input.agent) {
         setSessionAgent(input.sessionID, input.agent);
       }
@@ -465,7 +467,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
 
     config: configHandler,
 
-    event: async (input) => {
+     event: async (input) => {
       await autoUpdateChecker?.event(input);
       await claudeCodeHooks.event(input);
       await backgroundNotificationHook?.event(input);
@@ -474,6 +476,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
       await contextWindowMonitor?.event(input);
       await directoryAgentsInjector?.event(input);
       await directoryReadmeInjector?.event(input);
+      await sessionDirectoryMapper?.event(input);
       await rulesInjector?.event(input);
       await thinkMode?.event(input);
       await anthropicContextWindowLimitRecovery?.event(input);
