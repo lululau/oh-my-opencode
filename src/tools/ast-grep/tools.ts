@@ -3,7 +3,7 @@ import { CLI_LANGUAGES } from "./constants"
 import { runSg } from "./cli"
 import { formatSearchResult, formatReplaceResult } from "./utils"
 import type { CliLanguage } from "./types"
-import { resolveDefaultDirectoryPath } from "../../shared/default-directory"
+import { resolveSessionDirectoryPath } from "../../shared/default-directory"
 
 function showOutputToUser(context: unknown, output: string): void {
   const ctx = context as { metadata?: (input: { metadata: { output: string } }) => void }
@@ -50,8 +50,8 @@ export const ast_grep_search: ToolDefinition = tool({
   execute: async (args, context) => {
     try {
       const resolvedPaths = args.paths?.length
-        ? args.paths.map((path) => resolveDefaultDirectoryPath(path))
-        : [resolveDefaultDirectoryPath()]
+        ? args.paths.map((path) => resolveSessionDirectoryPath(context.sessionID, path))
+        : [resolveSessionDirectoryPath(context.sessionID)]
       const result = await runSg({
         pattern: args.pattern,
         lang: args.lang as CliLanguage,
@@ -95,8 +95,8 @@ export const ast_grep_replace: ToolDefinition = tool({
   execute: async (args, context) => {
     try {
       const resolvedPaths = args.paths?.length
-        ? args.paths.map((path) => resolveDefaultDirectoryPath(path))
-        : [resolveDefaultDirectoryPath()]
+        ? args.paths.map((path) => resolveSessionDirectoryPath(context.sessionID, path))
+        : [resolveSessionDirectoryPath(context.sessionID)]
       const result = await runSg({
         pattern: args.pattern,
         rewrite: args.rewrite,

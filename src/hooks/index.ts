@@ -34,3 +34,4 @@ export { createAtlasHook } from "./atlas";
 export { createDelegateTaskRetryHook } from "./delegate-task-retry";
 export { createQuestionLabelTruncatorHook } from "./question-label-truncator";
 export { createSubagentQuestionBlockerHook } from "./subagent-question-blocker";
+export { createSessionDirectoryMapperHook } from "./session-directory-mapper";
