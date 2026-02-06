@@ -2,6 +2,7 @@ import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import { runRgFiles } from "./cli"
 import { resolveGrepCliWithAutoInstall } from "./constants"
 import { formatGlobResult } from "./utils"
+import { resolveDefaultDirectoryPath } from "../../shared/default-directory"
 
 export const glob: ToolDefinition = tool({
   description:
@@ -23,9 +24,8 @@ export const glob: ToolDefinition = tool({
   execute: async (args, ctx) => {
     try {
       const cli = await resolveGrepCliWithAutoInstall()
-      // Use ctx.directory as the default search path when no path is provided
-      const searchPath = args.path ?? ctx.directory
-      const paths = [searchPath]
+      const resolvedPath = resolveDefaultDirectoryPath(args.path)
+      const paths = [resolvedPath]
 
       const result = await runRgFiles(
         {

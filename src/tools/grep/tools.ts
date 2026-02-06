@@ -1,6 +1,7 @@
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import { runRg } from "./cli"
 import { formatGrepResult } from "./utils"
+import { resolveDefaultDirectoryPath } from "../../shared/default-directory"
 
 export const grep: ToolDefinition = tool({
   description:
@@ -23,9 +24,8 @@ export const grep: ToolDefinition = tool({
   execute: async (args, ctx) => {
     try {
       const globs = args.include ? [args.include] : undefined
-      // Use ctx.directory as the default search path when no path is provided
-      const searchPath = args.path ?? ctx.directory
-      const paths = [searchPath]
+      const resolvedPath = resolveDefaultDirectoryPath(args.path)
+      const paths = [resolvedPath]
 
       const result = await runRg({
         pattern: args.pattern,
